@@ -64,3 +64,6 @@
         </div>
     </div>
 </section>
+
+<!-- Agregar cliente Modal -->   
+<jsp:include page="/WEB-INF/paginas/cliente/agregarCliente.jsp"/>
