@@ -14,7 +14,18 @@ public class ServletControlador extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        this.accionDefault(request, response);
+        String accion = request.getParameter("accion");
+        if (accion != null) {
+            switch (accion) {
+                case "editar":
+                    this.editarCliente(request, response);
+                    break;
+                default:
+                    this.accionDefault(request, response);
+            }
+        } else {
+            this.accionDefault(request, response);
+        }
     }
 
     private void accionDefault(HttpServletRequest request, HttpServletResponse response)
@@ -36,6 +47,16 @@ public class ServletControlador extends HttpServlet {
         }
         return saldoTotal;
     }
+    
+    private void editarCliente(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Recuperamos el idCliente
+        int idCliente = Integer.parseInt(request.getParameter("idCliente"));
+        Cliente cliente = new ClienteDaoJDBC().encontrar(new Cliente(idCliente));
+        request.setAttribute("cliente", cliente);
+        String jspEditar = "/WEB-INFO/paginas/cliente/editarCliente.jsp";
+        request.getRequestDispatcher(jspEditar).forward(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -49,8 +70,7 @@ public class ServletControlador extends HttpServlet {
                 default:
                     this.accionDefault(request, response);
             }
-        }
-        else {
+        } else {
             this.accionDefault(request, response);
         }
     }
@@ -64,17 +84,17 @@ public class ServletControlador extends HttpServlet {
         String telefono = request.getParameter("telefono");
         double saldo = 0;
         String saldoString = request.getParameter("saldo");
-        if(saldoString != null && !"".equals(saldoString)) {
+        if (saldoString != null && !"".equals(saldoString)) {
             saldo = Double.parseDouble(saldoString);
         }
-        
+
         //Creamos el objeto de cliente (modelo)
         Cliente cliente = new Cliente(nombre, apellido, email, telefono, saldo);
-        
+
         // Insertamos el nuevo objeto en la base de datos
         int registrosModificados = new ClienteDaoJDBC().insertar(cliente);
         System.out.println("registrosModificados = " + registrosModificados);
-        
+
         // Redirigimos hacia accion por default
         this.accionDefault(request, response);
     }
