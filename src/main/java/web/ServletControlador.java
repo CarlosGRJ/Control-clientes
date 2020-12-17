@@ -54,7 +54,7 @@ public class ServletControlador extends HttpServlet {
         int idCliente = Integer.parseInt(request.getParameter("idCliente"));
         Cliente cliente = new ClienteDaoJDBC().encontrar(new Cliente(idCliente));
         request.setAttribute("cliente", cliente);
-        String jspEditar = "/WEB-INFO/paginas/cliente/editarCliente.jsp";
+        String jspEditar = "/WEB-INF/paginas/cliente/editarCliente.jsp";
         request.getRequestDispatcher(jspEditar).forward(request, response);
     }
 
